@@ -3,7 +3,7 @@ title: Blog of Iven
 email: xuhyiven@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
   This is the blog of Iven Xu. Thank you for coming!
-baseurl: "/blog" # the subpath of your site, e.g. /blog
+baseurl: "" # the subpath of your site, e.g. /blog
 #url: "http://yourdomain.com" # the base hostname & protocol for your site
 github_username:  hsiven
 

@@ -1,5 +1,8 @@
-Established 状态的连接对于syn包的处理
---------
+---
+layout: post
+title: Established 状态的连接对于syn包的处理
+---
+
 前几天和同事一起项目评审时，碰到一个问题：就是在Estalished状态的连接如果收到syn包会如何处理？当时不是特别清楚，觉得可能是重新建立新的连接，或者回ack包，或者回reset。那么，在linux 协议栈中，如果处于Estabished状态的连接收到了syn包，到底会怎么处理呢？让我们从内核协议栈代码中来探寻这个答案。  
 
 首先，说一下TCP层收到包的处理流程（这里不讨论各个函数的细节处理逻辑，具体可查代码，就简单的说一下代码处理路径）。从IP层的收数据包通过tcp_v4_rcv达到TCP层.tcp_v4_rcv中首先查找socket，判断socket当前的状态，如果是TCP_TIME_WAIT，单独处理，这里暂时不讨论，对于其他正常的数据包，调用tcp_v4_do_rcv处理。在tcp_v4_do_rcv函数中，判断状态为TCP_ESTABLISHED,则调用tcp_rcv_established处理这个数据包。  
