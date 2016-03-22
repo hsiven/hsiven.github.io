@@ -27,7 +27,7 @@ listen的第一个参数是fd，这个很好理解，那么第二个参数backlo
 * 已完成连接队列（completed connection queue）  
   指的是已经完成三次握手，但是还没有accept的连接的队列。这些连接处于established状态。
   
-未完成连接队列的大小是由 /proc/sys/net/ipv4/tcp\_max\_syn\_backlog 设置。当然这个设置有效的前提是系统的syncookie 功能被禁用，如果syncookie被启动，那么通过proc设置未完成连接队列的大小是无效的（byw，可以通过 cat  /proc/sys/net/ipv4/tcp_syncookies 查看syncookie是否启用）。  
+未完成连接队列的大小是由 /proc/sys/net/ipv4/tcp\_max\_syn\_backlog 设置。当然这个设置有效的前提是系统的syncookie 功能被禁用，如果syncookie被启动，那么通过proc设置未完成连接队列的大小是无效的（btw，可以通过 cat  /proc/sys/net/ipv4/tcp_syncookies 查看syncookie是否启用）。  
 从前面已经知道，已完成连接队列的大小是由 listen的第二个参数backlog决定。但是backlog的大小不能超过/proc/sys/net/core/somaxconn，如果超过，则以somaxconn为准。  
 关于这两个队列的统计，可以通过以下命令来查看ListenOverflows（netstat -s也可以查看这个统计）。
 
