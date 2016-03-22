@@ -1,5 +1,8 @@
-系统调用 listen 的第二个参数backlog的含义 
-------
+---
+layout: post
+title:  系统调用 listen 第二个参数backlog的含义 
+---
+
 我们知道，tcp服务器上接受一个连接有以下步骤：
 
 * 首先调用socket，创建一个新的fd
@@ -7,13 +10,14 @@
 * 调用listen, 将fd由主动套接字变成被动套接字，并可以接受连接
 * 调用accept，开始接受连接
 
-今天我们探寻一下listen这个系统调用。
+今天我们探寻一下listen这个系统调用。  
 <code>
 	int listen(int sockfd, int backlog);
 </code>  
 listen的第一个参数是fd，这个很好理解，那么第二个参数backlog指的是什么。从man手册上看得的解释是：
 
-	The backlog argument defines the maximum length to which the queue of pending connections for sockfd may grow. 
+	    The backlog argument defines the maximum length to which the queue of
+	pending connections for sockfd may grow. 
 	
 也就是说，backlog指定了pending connections连接队列的大小。pending connections指的是已经完成三次握手，但还没有被accept的连接。  
 在内核中，系统为监听的套接字维护两个队列：
