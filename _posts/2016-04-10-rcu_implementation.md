@@ -7,7 +7,7 @@ title: RCU 实现原理
 RCU2002年加入到内核2.6版本中，经历过两个版本，第一个是经典版本--classic rcu，第二个是使用tree实现的tree RCU。下面简单的介绍一下这两种实现思想（具体的实现分析后续再分析）。  
 
 一、 经典RCU的实现  
-经典的RCU实现中有一个关键的概念，就是读端的临界区（critial section）受限于内核代码，并且不允许阻塞（block）。这也就意味着，任何时候对于一个特定的cpu，如果处于阻塞状态（blocking），或者退出了内核态，那么我们就知道RCU的read-side的临界区已经完成。这种状态称之为“quietcent state”（静态？好吧，我也不知道该怎么翻译）。在每一个CPU都至少经历过一个quietcent state，RCU的grace period（好吧，这个我也不知道该怎么翻译，竞争阶段？）结束了。
+经典的RCU实现中有一个关键的概念，就是读(read_rcu)临界区（critial section）受限于内核代码，并且不允许阻塞（block）。这也就意味着，任何时候对于一个特定的cpu，如果处于阻塞状态（blocking），或者退出了内核态，那么我们就知道RCU的read-side的临界区已经完成(或者对于read_rcu_bh，在临界区不允许抢占，如果cpu处于可抢占的状态，则表示这个cpu的读端临界区已经完成)。这种状态称之为“quietcent state”（静态？好吧，我也不知道该怎么翻译）。在每一个CPU都至少经历过一个quietcent state，RCU的grace period（好吧，这个我也不知道该怎么翻译，竞争阶段？）结束了。
   
 经典的RCU最重要的数据结构是 rcu_ctrlblk，这个结构中有一个cpumask域，每个cpu都有一个bit。每一个CPU在grace period的开始时设置为1，当经过过quietcent state之后就需要将bit clear。因为多个CPU可能需要并发的clear bit，当cpu个数比较多时，性能就会下降。另外，经典的RCU会唤醒正在睡眠的cpu（因为每个CPU都需要clear bit），这点限制了linux的省电能力。  
 
