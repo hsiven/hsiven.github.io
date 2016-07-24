@@ -5,7 +5,8 @@ title: 两则内核crash定位案例
 
 最近碰到了两起内核core，都比较难定位。不过最终组里大神hyman帮忙定位出了原因，现在在这里简单记录一下，以备需要需要时查阅。
 
-#一、递归造成的内核栈溢出
+# 一、递归造成的内核栈溢出
+
 由于我内核编码经验不足，在内核中使用了递归，造成了内核栈溢出的问题。下面介绍一下定位出是由于递归造成core，并打印出堆栈的过程。在这使用了crash工具。具体crash可自行搜索。
 
 具体步骤如下：
@@ -88,9 +89,10 @@ vmlinux-2.6.32.43-tlinux-1.0.4.m-default ./2016-07-19-09\:51/vmcore
 
 那么我们接下来反汇编 task_curr 看看有没有什么发现。
 
-* disassemble task_curr  
+* disassemble task_curr    
 
-<img src=https://raw.githubusercontent.com/hsiven/MarkdownPhotos/master/blog_5/disassemble_task_curr.png>
+<img src="https://raw.githubusercontent.com/hsiven/MarkdownPhotos/master/blog_5/disassemble_task_curr.png">    
+
 
 从dmesg中可以看出，是task_curr + 0x12 这一句出问题的，所以也就是上图中红色框框的那一句，这句是要将地址为（%rdx* 8 - 0x7e326f00）中的值赋给%rdx。这一句crash了，那么%rdx 中的值肯定是有问题的。从dmesg中我们可以看到寄存器中的值如下所示：
 
@@ -158,7 +160,7 @@ https://en.wikipedia.org/wiki/X86_calling_conventions#System_V_AMD64_ABI ）。�
 	
 从这里我们可以找到stack指针的地址，也就是0xffff882043f56000。在这里，我们看一下内核栈的布局。
 
-<img src=https://raw.githubusercontent.com/hsiven/MarkdownPhotos/master/blog_5/linux_stack_layout.png>
+<img src="https://raw.githubusercontent.com/hsiven/MarkdownPhotos/master/blog_5/linux_stack_layout.png">
 
 从上面这张图可以看出，stack指向的就是thread_info 结构体。而内核栈和thread_info 结构体共享内核栈空间（一共8k），thread_info就存储在内核栈的底部，内核栈是从高地址往低地址生长的，一旦溢出首先就破坏了thread_info。thread_info里存放着指向进程的指针等关键数据，迟早会被访问到，那时系统崩溃就是必然的事。接下来我们我们看看thread_info 这个结构现在是怎么样的？
 
@@ -245,7 +247,7 @@ https://en.wikipedia.org/wiki/X86_calling_conventions#System_V_AMD64_ABI ）。�
 
 * x /16gx 0xffffffffa0022f73
 
-<img src=https://raw.githubusercontent.com/hsiven/MarkdownPhotos/master/blog_5/build_children_trie.png>
+<img src="https://raw.githubusercontent.com/hsiven/MarkdownPhotos/master/blog_5/build_children_trie.png">
 
 从这里可以看出，这个地址是代码段里的。反汇编build_children_trie可以看出，这个地址是递归调用函数的返回地址。所以至此，可以判断定是这个递归函数导致了栈溢出。
 
@@ -313,7 +315,7 @@ Dmesg中有如下信息：
 	
 但内核并没有crash，并没有vcore帮助定位问题，所以只能从dmesg中去找蛛丝马迹。可以知道在free_block 中出现了问题，地址为 free_block+0x8e。
 
-<img src=https://raw.githubusercontent.com/hsiven/MarkdownPhotos/master/blog_5/disassemble_free_block.png>
+<img src="https://raw.githubusercontent.com/hsiven/MarkdownPhotos/master/blog_5/disassemble_free_block.png">
 
 也就是上图红色框框中的那一句。现在也就是说%rax寄存器的地址是有问题的。但是为什么有问题就不得而知了。另外，这个是内核的函数，并不是我们内核模块中的函数，这里出问题了说明有内存被踩了，但在哪里踩了，怎么踩的完全是一头雾水！
 
@@ -324,7 +326,7 @@ Dmesg中有如下信息：
 		
 打印出mirror_ip_array 的地址时发现地址是一系列字符串数值2020202020203020。通过反汇编查看整个模块的静态变量布局，刚好发现mirror_ip_array在block_content后面。而block_content就是刚才从kmalloc转换成static的变量。所以确定了是block_content踩内存，导致后面mirror_ip_array的指针被写成了字符串。
 
-<img src=https://raw.githubusercontent.com/hsiven/MarkdownPhotos/master/blog_5/block_content.png>
+<img src="https://raw.githubusercontent.com/hsiven/MarkdownPhotos/master/blog_5/block_content.png">
 
 至此，也就发现了问题的真正原因，是因为使用sprintf函数写字符串，而sprintf函数并没有判断边界，导致会概率性的出现踩内存，覆盖了mirror_ip_array指针（在此建议大家以后不再使用strcpy、sprintf这些不安全的字符串操作函数，都是泪的教训）。
 
