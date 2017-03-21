@@ -2,6 +2,7 @@
 layout: post
 title: 无人机中常用的坐标系介绍
 ---
+
 最近使用opencv进行3D重建，获得了基于左摄像机坐标系的三维坐标，然后需要将这个三维坐标系转换到机体NED坐标系坐标和GPS坐标。这个过程比较绕，涉及到关于无人机的几个参考坐标系，在这里简单的总结一下。 本文主要参考《Unmanned Rotorcraft Systems》第二章，Coordinate Systems and Transformations，相当于一个简单的学习摘要。 
 
 
