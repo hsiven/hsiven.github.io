@@ -28,6 +28,8 @@ title: 线上nginx踩内存问题定位记录
 
 <img src="https://raw.githubusercontent.com/hsiven/MarkdownPhotos/master/blog_7/blog_7_5.png">   
 
+这里就比较奇怪了，难道这个pool也曾经被踩了，然后reset之后又正常了？至此就陷入了困境，对于真正的原因还是没有头绪。
+
 
 # 二、使用AddressSanitizer
 想起了google的AddressSanitizer，可以定位关于内存的各种错误，包括use after free, heap buffer overflow, stack overflow, memory leaks等等错误。具体可以参考https://github.com/google/sanitizers/wiki/AddressSanitizer。于是就想用AddressSanitizer来看一下。目前gcc 4.8 以上已经支持AddressSanitizer了。所以，执行nginx的configure时，加上一下配置，然后重新编译nginx就可以使用强大的AddressSanitizer工具。
