@@ -145,7 +145,9 @@ title: crash打印内核percpu变量值
 
 打印出的域名和第一种方法匹配。
 
+
 #三、猜测法
+
 
 
 上面两种方法都是通过分析得到。如果实在不行，还可以通过猜测法得到。打印出寄存器的值后，将寄存器中看起来像地址的值打印出来看看。
@@ -160,6 +162,7 @@ title: crash打印内核percpu变量值
 
 当打印r12中的地址时，发现有一点像域名，然后向前打印一些就可以得到我们想要看到的域名信息。
 	<img src="https://raw.githubusercontent.com/hsiven/MarkdownPhotos/master/blog_8/blog_8_4.png"> 
+
 	
 #总结
 
