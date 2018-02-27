@@ -14,8 +14,8 @@ title: crash打印内核percpu变量值
 最终定位出来，发现错误比较弱智，但是定位的过程还是值得记录。最开始，通过堆栈找到这一行代码有问题，但是不知道host和len的值，不知道为什么会有问题。下面重点记录一下如何找出host值。  
 
 # 一、直接打印法
-分析代码，host值是保存在percpu变量中。而percpu变量本身是一个全局变量，每一个cpu使用通过per_cpu_ptr宏来获取percpu变量的指针地址。
-使用crash 分析内核core 文件的方法这里不再赘述，具体可以参考之前的博客：http://hsiven.github.io/2016/07/24/linux_crash.html
+使用crash 分析内核core 文件的方法这里不再赘述，具体可以参考之前的博客：http://hsiven.github.io/2016/07/24/linux_crash.html.
+分析代码和vcore，host值是保存在percpu变量中。而percpu变量本身是一个全局变量，每一个cpu使用通过per_cpu_ptr宏来获取percpu变量的指针地址。
 
 宏的定义如下：
 	
