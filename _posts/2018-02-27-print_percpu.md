@@ -146,7 +146,7 @@ title: crash打印内核percpu变量值
 打印出的域名和第一种方法匹配。
 
 
-#三、猜测法
+# 三、猜测法
 
 
 
@@ -164,7 +164,7 @@ title: crash打印内核percpu变量值
 	<img src="https://raw.githubusercontent.com/hsiven/MarkdownPhotos/master/blog_8/blog_8_4.png"> 
 
 	
-#总结
+# 总结
 
 
 总体而言，还是需要对于堆栈、汇编、内核更加深入了解，才能在定位问题时得心应手。csapp有时间还是需要好好的复习一下相关章节。
