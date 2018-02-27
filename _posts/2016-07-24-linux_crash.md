@@ -14,7 +14,7 @@ title: 两则内核crash定位案例
 * ./crash System.map-2.6.32.43-tlinux-1.0.4.m-default 
 vmlinux-2.6.32.43-tlinux-1.0.4.m-default ./2016-07-19-09\:51/vmcore
 
-* mod -s tvs *.ko，加载ko的符号
+* mod -s tvs  *.ko，加载ko的符号
 
 * dmesg，打印内核crash时的log信息  
 
