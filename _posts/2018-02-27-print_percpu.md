@@ -7,7 +7,7 @@ title: crash打印内核percpu变量值
 
 	snprintf(buff, len, host);
 	
-其中host是域名，存在url 编码存在，比如p%20a%20n.baidu.com，对于存在 % 的字符串，snprintf 这种用法会有问题，导致core，正确的用法
+其中host是域名，存在url编码，比如p%20a%20n.baidu.com，对于存在 % 的字符串，snprintf 这种用法会有问题，导致core，正确的用法
 
 	snprintf(buff, len, "%s", host);
 	
