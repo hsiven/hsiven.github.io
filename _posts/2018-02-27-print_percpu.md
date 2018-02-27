@@ -1,5 +1,5 @@
 ---
-layout： post
+layout: post
 title: crash打印内核percpu变量值
 ---
 
